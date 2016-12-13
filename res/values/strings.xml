@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">应用自动启动器</string>
+    <string name="app_desc">可以选择应用，让它们开机自动启动</string>
+    
+    <string name="action_settings">Settings</string>
+    <string name="action_cancel_exit">Cancel Start Apps And Exit</string>
+    <string name="action_show_applist">Show App List</string>
+    <string name="action_begin_launch">Begin Launch Apps</string>
+
+</resources>
