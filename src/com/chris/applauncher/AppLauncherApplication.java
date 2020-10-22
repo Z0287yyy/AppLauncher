@@ -48,7 +48,7 @@ public class AppLauncherApplication extends Application {
 
 	public static final int convertToDIP(int pixels) {
 		float density = getAppContext().getResources().getDisplayMetrics().density;
-		return Math.round(pixels / density); // DIP
+		return Math.round(pixels / density);    // DIP
 	}
 
 	public static int getScreenWidth() {
