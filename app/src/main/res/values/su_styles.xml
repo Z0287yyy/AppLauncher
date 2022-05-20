@@ -1,0 +1,12 @@
+<resources>
+
+    <style name="toast_text_size">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="toast_bg">
+        <item name="android:minHeight">120dp</item>
+        <item name="android:minWidth">200dp</item>
+    </style>
+
+</resources>
