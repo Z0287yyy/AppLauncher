@@ -13,6 +13,7 @@
     <string name="need_permission">Need permission to get App List</string>
     <string name="input_app_name">Please input App name</string>
 
+    <string name="tips">The configured App is being launched. If there is no other operation, this App will automatically exit after the startup is completed.</string>
     <string name="auth_info">This is a open source project，url：https://github.com/Z0287yyy/AppLauncher</string>
 
 </resources>
