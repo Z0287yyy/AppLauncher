@@ -58,21 +58,23 @@ public class MainActivity extends AppLauncherActivity {
 				selAppInfos = new Gson().fromJson(selAppPacksStr, new TypeToken<List<AppInfo>>(){}.getType());
 			} catch (Exception e) {
 			}
-			
-			for (AppInfo appInfo : selAppInfos) {
-				try {
-					PackageManager packageManager = getPackageManager();
-					Intent intent = new Intent();
-					intent = packageManager.getLaunchIntentForPackage(appInfo.pack);
-					startActivity(intent);
-				} catch (Exception e) {
-				}
-				try {
-					Thread.sleep(1000l);
-				} catch (Exception e) {
+
+			if (selAppInfos != null) {
+				for (AppInfo appInfo : selAppInfos) {
+					try {
+						PackageManager packageManager = getPackageManager();
+						Intent intent = new Intent();
+						intent = packageManager.getLaunchIntentForPackage(appInfo.pack);
+						startActivity(intent);
+					} catch (Exception e) {
+					}
+					try {
+						Thread.sleep(1000l);
+					} catch (Exception e) {
+					}
 				}
 			}
-			
+
 			try {
 				Thread.sleep(1000l);
 			} catch (Exception e) {
