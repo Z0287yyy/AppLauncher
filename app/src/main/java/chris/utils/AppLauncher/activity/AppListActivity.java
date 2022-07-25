@@ -1,36 +1,44 @@
 package chris.utils.AppLauncher.activity;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import chris.utils.AppLauncher.AppLauncherActivity;
 import chris.utils.AppLauncher.R;
+import chris.utils.AppLauncher.base.SUBaseActivity;
 import chris.utils.AppLauncher.entity.AppInfo;
-import chris.utils.AppLauncher.utils.base.ObjectUtils;
+import chris.utils.AppLauncher.utils.base.AlertUtils;
+import chris.utils.AppLauncher.utils.base.MainLooperUtils;
 import chris.utils.AppLauncher.utils.base.PreferenceUtils;
-import chris.utils.AppLauncher.utils.base.StringUtils;
 import chris.utils.AppLauncher.utils.base.UiUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class AppListActivity extends AppLauncherActivity {
+public class AppListActivity extends SUBaseActivity {
 	
 	private List<AppInfo> selAppInfos = new ArrayList<AppInfo>();
 
-	private List<AppInfo> appInfos;
+	private final List<AppInfo> allAppInfos = new ArrayList<>();
+	private final List<AppInfo> curAppInfos = new ArrayList<>();
+
+	private EditText etName;
 	private ListView lvApps;
 	private ArrayAdapter<AppInfo> appInfoAdapter;
 	
@@ -39,7 +47,19 @@ public class AppListActivity extends AppLauncherActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_applist);
-		
+
+		etName = findViewById(R.id.etName);
+		etName.addTextChangedListener(textWatcher);
+		etName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					UiUtils.hideKeyboard(v);
+				}
+				return false;
+			}
+		});
+
 		setTitle(R.string.action_settings);
 		
 		String selAppPacksStr = PreferenceUtils.getInstance().getString("applist_infos");
@@ -50,30 +70,83 @@ public class AppListActivity extends AppLauncherActivity {
 		if (selAppInfos == null) {
 			selAppInfos = new ArrayList<AppInfo>();
 		}
-		
-		appInfos = AppInfo.getAppInfos(getApplicationContext());
-		
-		List<AppInfo> shouldRemovedAppInfos = new ArrayList<AppInfo>();
-		for (AppInfo appInfo : selAppInfos) {
-			if (!appInfos.contains(appInfo)) {
-				shouldRemovedAppInfos.add(appInfo);
-			}
-		}
-		selAppInfos.removeAll(shouldRemovedAppInfos);
-		
-		lvApps = findTViewById(R.id.lvApps);
-		appInfoAdapter = new AppListAdapter<AppInfo>(this, R.layout.item_applist, R.id.tvAppName, appInfos);
+
+		lvApps = findViewById(R.id.lvApps);
+		appInfoAdapter = new AppListAdapter<AppInfo>(this, R.layout.item_applist, R.id.tvAppName, curAppInfos);
 		lvApps.setAdapter(appInfoAdapter);
 		
 		lvApps.setOnItemClickListener(onAppClicked);
 		//lvApps.setOnItemSelectedListener(onAppSelected);
+
+		getAppList();
 	}
-	
+
+	private void getAppList() {
+		checkAndRequestPermissions(new PermissionCallback() {
+			@Override
+			public void didAllPermissionGranted() {
+				new Thread() {
+					@Override
+					public void run() {
+						allAppInfos.addAll(AppInfo.getAppInfos(self(), false));
+
+						List<AppInfo> shouldRemovedAppInfos = new ArrayList<AppInfo>();
+						for (AppInfo appInfo : selAppInfos) {
+							if (!allAppInfos.contains(appInfo)) {
+								shouldRemovedAppInfos.add(appInfo);
+							}
+						}
+						selAppInfos.removeAll(shouldRemovedAppInfos);
+
+						MainLooperUtils.doInMainLooper(new MainLooperUtils.Action() {
+							@Override
+							public void doAction() {
+								refreshAppListUi();
+							}
+						});
+					}
+				}.start();
+			}
+
+			@Override
+			public void didGetError(String error) {
+				AlertUtils.alert(self(), "", getString(R.string.need_permission), false, new AlertUtils.Callback() {
+					@Override
+					public void onItemClicked(DialogInterface dialog) {
+						finish();
+					}
+				});
+			}
+		}, Manifest.permission.QUERY_ALL_PACKAGES);
+
+	}
+
+	private void refreshAppListUi() {
+		curAppInfos.clear();
+
+		String searchKey = etName.getText().toString().toLowerCase().trim();
+
+		if (searchKey.length() > 0) {
+			List<AppInfo> appInfos = new ArrayList<>();
+			for (AppInfo appInfo : allAppInfos) {
+				if (appInfo.name.toLowerCase(Locale.ROOT).contains(etName.getText().toString().toLowerCase(Locale.ROOT))) {
+					appInfos.add(appInfo);
+				}
+			}
+
+			curAppInfos.addAll(appInfos);
+		} else {
+			curAppInfos.addAll(allAppInfos);
+		}
+
+		appInfoAdapter.notifyDataSetChanged();
+	}
+
 	private AdapterView.OnItemClickListener onAppClicked = new AdapterView.OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView parent, View view, int position, long id) {
-			AppInfo appInfo = appInfos.get(position);
+			AppInfo appInfo = curAppInfos.get(position);
 			boolean check = !selAppInfos.contains(appInfo);
 			if (selAppInfos.contains(appInfo)) {
 				selAppInfos.remove(appInfo);
@@ -105,7 +178,24 @@ public class AppListActivity extends AppLauncherActivity {
 
 		
 	};
-	
+
+
+	private TextWatcher textWatcher = new TextWatcher() {
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			refreshAppListUi();
+		}
+	};
+
+
 	private class AppListAdapter<T> extends ArrayAdapter<AppInfo> {
 
 		public AppListAdapter(Context context, int resource, int textViewResourceId, List<AppInfo> objects) {

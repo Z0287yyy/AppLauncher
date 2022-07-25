@@ -2,11 +2,17 @@
 <resources>
 
     <string name="app_name">应用自动启动器</string>
-    <string name="app_desc">可以选择应用，让它们开机自动启动</string>
+    <string name="app_desc">配置开机自动启动的应用</string>
     
-    <string name="action_settings">Settings</string>
-    <string name="action_cancel_exit">Cancel Start Apps And Exit</string>
-    <string name="action_show_applist">Show App List</string>
+    <string name="OK">好的</string>
+    <string name="Cancel">取消</string>
+    <string name="action_settings">设置</string>
+    <string name="action_cancel_exit">取消并退出应用</string>
+    <string name="action_show_applist">选择应用列表</string>
     <string name="action_begin_launch">Begin Launch Apps</string>
+    <string name="need_permission">需要获得许可才能获取应用列表</string>
+    <string name="input_app_name">请输入应用名称</string>
+
+    <string name="auth_info">本项目属于开源项目，地址：https://github.com/Z0287yyy/AppLauncher</string>
 
 </resources>

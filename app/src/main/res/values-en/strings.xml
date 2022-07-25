@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">App Launcher</string>
+    <string name="app_desc">Help app launch when boot up</string>
+
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_cancel_exit">Cancel Start Apps And Exit</string>
+    <string name="action_show_applist">Show App List</string>
+    <string name="action_begin_launch">Begin Launch Apps</string>
+    <string name="need_permission">Need permission to get App List</string>
+    <string name="input_app_name">Please input App name</string>
+
+    <string name="auth_info">This is a open source project，url：https://github.com/Z0287yyy/AppLauncher</string>
+
+</resources>

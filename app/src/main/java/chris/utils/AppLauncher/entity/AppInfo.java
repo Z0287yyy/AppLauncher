@@ -46,17 +46,30 @@ public class AppInfo implements Serializable {
 	}
 
 
-
-	public static List<AppInfo> getAppInfos(Context context) {
+	public static List<AppInfo> getAppInfos(Context context, boolean includeSystemApp) {
 		List<AppInfo> appInfos = new ArrayList<AppInfo>();
 		try {
 			PackageManager packageManager = null;
 			packageManager = context.getPackageManager();
 			List<PackageInfo> mAllPackages = new ArrayList<PackageInfo>();
-			mAllPackages = packageManager.getInstalledPackages(0);
+			mAllPackages = packageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
 			for (int i = 0; i < mAllPackages.size(); i++) {
 				PackageInfo packageInfo = mAllPackages.get(i);
-				
+
+				if (!includeSystemApp) {
+					if (packageInfo.packageName.indexOf("android") == 0) {
+						continue;
+					}
+
+					if (packageInfo.packageName.indexOf("com.android.") == 0) {
+						continue;
+					}
+
+					if (packageInfo.packageName.indexOf("com.google.") == 0) {
+						continue;
+					}
+				}
+
 				AppInfo info = new AppInfo();
 				try {
 					info.name = packageInfo.applicationInfo.loadLabel(packageManager).toString();
@@ -67,6 +80,7 @@ public class AppInfo implements Serializable {
 				appInfos.add(info);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return appInfos;
 	}

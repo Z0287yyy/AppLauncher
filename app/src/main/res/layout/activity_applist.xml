@@ -3,7 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/input_app_name"
+            android:lines="1"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/lvApps"
         android:layout_width="match_parent"

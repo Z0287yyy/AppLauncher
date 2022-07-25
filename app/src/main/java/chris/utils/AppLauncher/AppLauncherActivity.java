@@ -1,5 +1,6 @@
 package chris.utils.AppLauncher;
 
+import chris.utils.AppLauncher.permission.PermissionBaseActivity;
 import chris.utils.AppLauncher.utils.base.UiUtils;
 
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AppLauncherActivity extends AppCompatActivity {
+public class AppLauncherActivity extends PermissionBaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
