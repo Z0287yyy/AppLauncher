@@ -11,12 +11,16 @@ import android.view.WindowManager;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 public class AppLauncherApplication extends Application {
 	private static AppLauncherApplication appContext;
 
 	public void onCreate() {
 		super.onCreate();
-		
+
+		CrashReport.initCrashReport(getApplicationContext(), "68d082bf5f", false);
+
 		initStrictMode();
 
 		appContext = this;
