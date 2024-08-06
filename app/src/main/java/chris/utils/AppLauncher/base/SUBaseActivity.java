@@ -153,7 +153,7 @@ public class SUBaseActivity extends PermissionBaseActivity {
                     weak.get().finish();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                // Log
             }
 
             it.remove();
