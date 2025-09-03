@@ -82,43 +82,104 @@ public class AppListActivity extends SUBaseActivity {
 	}
 
 	private void getAppList() {
-		checkAndRequestPermissions(new PermissionCallback() {
+		new Thread() {
 			@Override
-			public void didAllPermissionGranted() {
-				new Thread() {
-					@Override
-					public void run() {
-						allAppInfos.addAll(AppInfo.getAppInfos(self(), false));
+			public void run() {
+				List<AppInfo> fetched = queryAllLauncherApps(self(), false /* includeDisabled */);
 
-						List<AppInfo> shouldRemovedAppInfos = new ArrayList<AppInfo>();
-						for (AppInfo appInfo : selAppInfos) {
-							if (!allAppInfos.contains(appInfo)) {
-								shouldRemovedAppInfos.add(appInfo);
-							}
-						}
-						selAppInfos.removeAll(shouldRemovedAppInfos);
+				allAppInfos.clear();
+				allAppInfos.addAll(fetched);
 
-						MainLooperUtils.doInMainLooper(new MainLooperUtils.Action() {
-							@Override
-							public void doAction() {
-								refreshAppListUi();
-							}
-						});
+				// 和你的旧选择列表对齐：移除已卸载项
+				List<AppInfo> shouldRemovedAppInfos = new ArrayList<>();
+				for (AppInfo appInfo : selAppInfos) {
+					if (!allAppInfos.contains(appInfo)) {
+						shouldRemovedAppInfos.add(appInfo);
 					}
-				}.start();
-			}
+				}
+				selAppInfos.removeAll(shouldRemovedAppInfos);
 
-			@Override
-			public void didGetError(String error) {
-				AlertUtils.alert(self(), "", getString(R.string.need_permission), false, new AlertUtils.Callback() {
+				MainLooperUtils.doInMainLooper(new MainLooperUtils.Action() {
 					@Override
-					public void onItemClicked(DialogInterface dialog) {
-						finish();
+					public void doAction() {
+						refreshAppListUi();
 					}
 				});
 			}
-		}, Manifest.permission.QUERY_ALL_PACKAGES);
+		}.start();
+	}
 
+	private List<AppInfo> queryAllLauncherApps(Context context, boolean includeDisabled) {
+		List<AppInfo> result = new ArrayList<>();
+		try {
+			android.content.pm.PackageManager pm = context.getPackageManager();
+
+			android.content.Intent queryIntent = new android.content.Intent(android.content.Intent.ACTION_MAIN);
+			queryIntent.addCategory(android.content.Intent.CATEGORY_LAUNCHER);
+
+			java.util.List<android.content.pm.ResolveInfo> infos;
+			if (android.os.Build.VERSION.SDK_INT >= 33) {
+				long flags = android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
+				if (includeDisabled) {
+					flags |= android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+				}
+				infos = pm.queryIntentActivities(queryIntent,
+						android.content.pm.PackageManager.ResolveInfoFlags.of(flags));
+			} else {
+				int flags = android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
+				if (includeDisabled) {
+					flags |= android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+				}
+				//noinspection deprecation
+				infos = pm.queryIntentActivities(queryIntent, flags);
+			}
+
+			// 去重（同一个包可能有多个 Launcher Activity，这里按 包名+类名 唯一）
+			java.util.LinkedHashMap<String, android.content.pm.ResolveInfo> unique = new java.util.LinkedHashMap<>();
+			if (infos != null) {
+				for (android.content.pm.ResolveInfo ri : infos) {
+					if (ri.activityInfo == null) continue;
+					String key = ri.activityInfo.packageName + "/" + ri.activityInfo.name;
+					unique.put(key, ri);
+				}
+			}
+
+			for (android.content.pm.ResolveInfo ri : unique.values()) {
+				String label = safeLoadLabel(ri, pm);
+				String pkg   = ri.activityInfo.packageName;
+				String cls   = ri.activityInfo.name;
+
+				// ✅ 这里把 ResolveInfo 映射到你的 AppInfo
+				AppInfo ai = new AppInfo();
+				ai.name = label;    // 你的适配器里引用了 appInfo.name
+				ai.pack = pkg;      // 你的适配器里引用了 appInfo.pack
+				// 如需保存具体启动 Activity，可在 AppInfo 里加字段：activityName/cls
+				// ai.activityName = cls;
+
+				result.add(ai);
+			}
+
+			// 排序：按名称
+			java.util.Collections.sort(result, new java.util.Comparator<AppInfo>() {
+				@Override public int compare(AppInfo a, AppInfo b) {
+					String la = a.name != null ? a.name : "";
+					String lb = b.name != null ? b.name : "";
+					return la.compareToIgnoreCase(lb);
+				}
+			});
+
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return result;
+	}
+
+	private static String safeLoadLabel(android.content.pm.ResolveInfo ri, android.content.pm.PackageManager pm) {
+		try {
+			CharSequence cs = ri.loadLabel(pm);
+			if (cs != null) return cs.toString();
+		} catch (Throwable ignored) {}
+		return (ri.activityInfo != null ? ri.activityInfo.packageName : "");
 	}
 
 	private void refreshAppListUi() {
