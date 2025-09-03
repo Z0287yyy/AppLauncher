@@ -1,0 +1,94 @@
+[versions]
+agp = "8.8.0"
+kotlin = "2.0.0"
+coreKtx = "1.15.0"
+androidxFragment = "1.8.6"
+browser = "1.8.0"
+firebaseBom = "33.9.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+bugly = "latest.release"
+sensorsdata = "6.8.4"
+mmkv = "2.1.0"
+
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
+zxing = "3.5.2"
+autosize = "1.2.1"
+coil = "3.0.4"
+gson = "2.11.0"
+utilcodex = "1.31.1"
+okhttp = "4.12.0"
+retrofit = "2.9.0"
+loggingInterceptor = "4.12.0"
+lifecycleExtensions = "2.2.0"
+kotlinxCoroutinesCore = "1.9.0"
+lifecycleRuntimeKtx = "2.8.7"
+lifecycle = "3.3.0"
+rive = "10.4.1"
+work = "2.7.1"
+awsAndroidSdkCore = "2.79.0"
+network = "0.4.5.3"
+
+baseRecycleAdapter ="4.1.4"
+circleImageView = "3.1.0"
+pictureSelector = "4.0.0"
+
+converterGson = "2.9.0"
+[libraries]
+
+google-firebase-bom = {module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}
+google-firebase-analytics = {module = "com.google.firebase:firebase-analytics"}
+
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+
+bugly = { module = "com.tencent.bugly:crashreport", version.ref = "bugly" }
+sensorsdata = { group = "com.sensorsdata.analytics.android", name = "SensorsAnalyticsSDK", version.ref = "sensorsdata" }
+autosize = { module = "me.jessyan:autosize", version.ref = "autosize" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-zxing = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
+utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidxFragment" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+core = { module = "com.afollestad.material-dialogs:core", version.ref = "lifecycle" }
+rive = { module = "app.rive:rive-android", version.ref = "rive" }
+workmanager = { module = "androidx.work:work-runtime", version.ref = "work" }
+aws-android-sdk-core = { module = "com.amazonaws:aws-android-sdk-core", version.ref = "awsAndroidSdkCore" }
+aws-android-sdk-iot = { module = "com.amazonaws:aws-android-sdk-iot", version.ref = "awsAndroidSdkCore" }
+stealthcopter-network = { module = "com.github.stealthcopter:AndroidNetworkTools", version.ref = "network" }
+
+lifecycle = { module = "com.afollestad.material-dialogs:lifecycle", version.ref = "lifecycle" }
+bottomsheets = { module = "com.afollestad.material-dialogs:bottomsheets", version.ref = "lifecycle" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+base-recycle-adapter = {module = "io.github.cymchad:BaseRecyclerViewAdapterHelper4",version.ref = "baseRecycleAdapter"}
+circleimageview = {module = "de.hdodenhof:circleimageview",version.ref = "circleImageView"}
+
+pictureselector = {module = "com.github.peihua8858:PictureSelector",version.ref = "pictureSelector"}
+
+tencent-mmkv = {module = "com.tencent:mmkv",version.ref = "mmkv"}
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
