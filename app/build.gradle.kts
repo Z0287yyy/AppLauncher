@@ -73,8 +73,8 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
-    implementation("com.tencent.bugly:crashreport:latest.release")
     implementation (libs.gson)
+
 }
 
 fun releaseTime(): String {
