@@ -9,7 +9,7 @@
     <string name="action_settings">设置</string>
     <string name="action_cancel_exit">取消并退出应用</string>
     <string name="action_show_applist">选择应用列表</string>
-    <string name="action_begin_launch">Begin Launch Apps</string>
+    <string name="action_begin_launch">开始加载应用</string>
     <string name="need_permission">需要获得许可才能获取应用列表</string>
     <string name="input_app_name">请输入应用名称</string>
 
