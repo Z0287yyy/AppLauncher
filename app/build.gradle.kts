@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "chris.utils.AppLauncher"
-        minSdk = 29
+        minSdk = 24
         targetSdk = 36
         versionCode = releaseTime().toInt()
         versionName = "1.3." + releaseTime()
