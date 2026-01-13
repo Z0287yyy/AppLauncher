@@ -45,7 +45,7 @@ android {
         val variant = this
         variant.outputs.all {
             val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            output.outputFileName = "Czlappstore_${variant.versionName}${variant.buildType.name}.apk"
+            output.outputFileName = "ChrisAppLauncher_${variant.versionName}${variant.buildType.name}.apk"
                 .replace("[", "")
                 .replace("]", "")
                 .replace("debug", ".D")
