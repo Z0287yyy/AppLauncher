@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +24,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppLauncherActivity {
 
-    private static final int DEFAULT_WAIT_START_APPS_SEC = 5;
+    private static final int DEFAULT_WAIT_START_APPS_SEC = 10;
+    private static final int ACTION_WAIT_START_APPS_SEC = 1;
     private static final int START_APPS_INTERVAL_SEC = 10;
 
 	private Button btnShowList;
@@ -59,15 +61,35 @@ public class MainActivity extends AppLauncherActivity {
         mainHandler.removeCallbacksAndMessages(null);
         mainHandler.postDelayed(startSelectedApps, DEFAULT_WAIT_START_APPS_SEC * 1000L);
 
-        List<AppInfo> selAppInfos = getSelAppInfos();
-        String tips = String.format(getString(R.string.tips), DEFAULT_WAIT_START_APPS_SEC, DEFAULT_WAIT_START_APPS_SEC + selAppInfos.size() * START_APPS_INTERVAL_SEC);
+        String tips = String.format(getString(R.string.tips), DEFAULT_WAIT_START_APPS_SEC);
         tvTips.setText(tips);
 
-        tvStartInfo.setText(null);
+        refreshStartAppsInfo();
 	}
 
+    private void refreshStartAppsInfo() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            List<AppInfo> selAppInfos = getSelAppInfos();
+
+            for (AppInfo app: selAppInfos) {
+                if (sb.length() > 0) {
+                    sb.append("; \r\n");
+                }
+                sb.append(app.name + " (" + app.pack + ")");
+            }
+            if (sb.length() > 0) {
+                sb.append(". ");
+            }
+        } catch (Exception e) {
+        }
+
+        tvStartInfo.setText(sb.toString());
+    }
+
+
     private List<AppInfo> getSelAppInfos() {
-        List<AppInfo> selAppInfos = new ArrayList<AppInfo>();
+        List<AppInfo> selAppInfos = new ArrayList<>();
         String selAppPacksStr = PreferenceUtils.getInstance().getString("applist_infos");
         try {
             selAppInfos = new Gson().fromJson(selAppPacksStr, new TypeToken<List<AppInfo>>(){}.getType());
@@ -77,8 +99,6 @@ public class MainActivity extends AppLauncherActivity {
     }
 	
 	private final Runnable startSelectedApps = new Runnable() {
-		
-
 		@Override
 		public void run() {
 			if (startAppCanceled) {
@@ -88,25 +108,31 @@ public class MainActivity extends AppLauncherActivity {
             List<AppInfo> selAppInfos = getSelAppInfos();
 
 			if (selAppInfos != null) {
+                List<Intent> intents = new ArrayList<>();
+
+                PackageManager packageManager = getPackageManager();
+
 				for (int i = 0; i < selAppInfos.size(); i ++) {
                     AppInfo appInfo = selAppInfos.get(i);
-                    mainHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String tips = String.format(getString(R.string.start_app_tips), appInfo.name, appInfo.pack);
-                                tvStartInfo.setText(tips);
 
-                                PackageManager packageManager = getPackageManager();
-                                Intent intent = new Intent();
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent = packageManager.getLaunchIntentForPackage(appInfo.pack);
-                                startActivity(intent);
-                            } catch (Exception e) {
-                            }
+                    try {
+                        PackageInfo pi = packageManager.getPackageInfo(appInfo.pack, 0);
+                        if (pi == null || pi.packageName == null || pi.packageName.isEmpty()) {
+                            continue;
                         }
-                    }, i * START_APPS_INTERVAL_SEC * 1000L);
+                    } catch (Exception e) {
+                        continue;
+                    }
+
+                    Intent intent = new Intent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent = packageManager.getLaunchIntentForPackage(appInfo.pack);
+
+                    intents.add(intent);
 				}
+
+                Intent[] intentsArr = new Intent[intents.size()];
+                startActivities(intents.toArray(intentsArr));
 
                 mainHandler.postDelayed(new Runnable() {
                     @Override
@@ -125,6 +151,8 @@ public class MainActivity extends AppLauncherActivity {
 		@Override
 		public void onClick(View v) {
             mainHandler.removeCallbacksAndMessages(null);
+            tvTips.setText(null);
+            tvStartInfo.setText(null);
 			
 			startActivity(new Intent(getBaseContext(), AppListActivity.class));
 		}
@@ -136,7 +164,10 @@ public class MainActivity extends AppLauncherActivity {
 		@Override
 		public void onClick(View v) {
             mainHandler.removeCallbacksAndMessages(null);
-			
+
+            tvTips.setText(null);
+            tvStartInfo.setText(null);
+
 			finish();
 		}
 		
@@ -148,8 +179,13 @@ public class MainActivity extends AppLauncherActivity {
 		public void onClick(View v) {
 			startAppCanceled = false;
 
+            String tips = String.format(getString(R.string.tips), ACTION_WAIT_START_APPS_SEC);
+            tvTips.setText(tips);
+
+            refreshStartAppsInfo();
+
             mainHandler.removeCallbacksAndMessages(null);
-            mainHandler.postDelayed(startSelectedApps, 1000L);
+            mainHandler.postDelayed(startSelectedApps, ACTION_WAIT_START_APPS_SEC * 1000L);
 		}
 		
 	};

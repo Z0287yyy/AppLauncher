@@ -13,8 +13,8 @@
     <string name="need_permission">需要获得许可才能获取应用列表</string>
     <string name="input_app_name">请输入应用名称</string>
 
-    <string name="tips">%d秒后，开始启动配置的App，如无其他操作，本App将在%d后自动退出</string>
-    <string name="start_app_tips">正在启动《%s》（%s）</string>
+    <string name="tips">%d秒后，开始启动配置的App，如无其他操作，本App将在调用启动后自动退出</string>
+    <string name="start_app_tips">正在启动：%s</string>
     <string name="auth_info">本项目属于开源项目，地址：https://github.com/Z0287yyy/AppLauncher</string>
 
 </resources>
