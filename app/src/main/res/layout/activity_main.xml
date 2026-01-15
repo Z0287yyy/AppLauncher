@@ -41,6 +41,7 @@
         />
 
     <TextView
+        android:id="@+id/tvTips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -48,6 +49,16 @@
         android:textSize="20sp"
         android:textColor="@android:color/holo_red_dark"
         android:text="@string/tips"
+        />
+
+    <TextView
+        android:id="@+id/tvStartInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="12sp"
+        android:textColor="@android:color/holo_red_dark"
+        tools:text="@string/start_app_tips"
         />
 
     <View

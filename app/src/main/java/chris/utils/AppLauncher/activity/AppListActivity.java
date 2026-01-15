@@ -1,6 +1,8 @@
 package chris.utils.AppLauncher.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +100,21 @@ public class AppListActivity extends SUBaseActivity {
 						}
 						selAppInfos.removeAll(shouldRemovedAppInfos);
 
+                        Collections.sort(allAppInfos, new Comparator<AppInfo>() {
+                            @Override
+                            public int compare(AppInfo a1, AppInfo a2) {
+                                int i1 = 1;
+                                int i2 = 1;
+                                if (selAppInfos.contains(a1)) {
+                                    i1 = 0;
+                                }
+                                if (selAppInfos.contains(a2)) {
+                                    i2 = 0;
+                                }
+                                return i1 - i2;
+                            }
+                        });
+
 						MainLooperUtils.doInMainLooper(new MainLooperUtils.Action() {
 							@Override
 							public void doAction() {
@@ -142,7 +159,7 @@ public class AppListActivity extends SUBaseActivity {
 		appInfoAdapter.notifyDataSetChanged();
 	}
 
-	private AdapterView.OnItemClickListener onAppClicked = new AdapterView.OnItemClickListener() {
+	private final AdapterView.OnItemClickListener onAppClicked = new AdapterView.OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -162,7 +179,7 @@ public class AppListActivity extends SUBaseActivity {
 			}
 		}
 	};
-	
+
 	private AdapterView.OnItemSelectedListener onAppSelected = new AdapterView.OnItemSelectedListener() {
 
 		@Override
@@ -173,14 +190,11 @@ public class AppListActivity extends SUBaseActivity {
 		@Override
 		public void onNothingSelected(AdapterView<?> parent) {
 			// TODO Auto-generated method stub
-			
 		}
-
-		
 	};
 
 
-	private TextWatcher textWatcher = new TextWatcher() {
+	private final TextWatcher textWatcher = new TextWatcher() {
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 		}
@@ -226,7 +240,7 @@ public class AppListActivity extends SUBaseActivity {
 		
 	}
 	
-	private class ViewHolder {
+	private static class ViewHolder {
 		CheckedTextView tvAppName;
 		TextView tvAppPack;
 	}
