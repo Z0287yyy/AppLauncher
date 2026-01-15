@@ -3,10 +3,13 @@ package chris.utils.AppLauncher;
 import chris.utils.AppLauncher.permission.PermissionBaseActivity;
 import chris.utils.AppLauncher.utils.base.UiUtils;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +18,19 @@ public class AppLauncherActivity extends PermissionBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        // ========== 核心：开启状态栏透明+布局延伸 ==========
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // 1. 状态栏完全透明
+            window.setStatusBarColor(Color.TRANSPARENT);
+            // 2. 让布局延伸到状态栏区域（fitsSystemWindows才会生效）
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            );
+        }
+
 		setContentView(R.layout.activity_shared_utils);
 	}
 

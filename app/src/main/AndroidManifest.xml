@@ -29,7 +29,9 @@
         >
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="chris.utils.AppLauncher.activity.AppListActivity" android:launchMode="singleInstance" />
+        <activity android:name="chris.utils.AppLauncher.activity.AppListActivity" android:launchMode="singleTask" />
 
         <receiver android:name="chris.utils.AppLauncher.receiver.BootBroadcastReceiver"
             android:exported="false">
