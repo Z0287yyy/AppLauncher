@@ -2,6 +2,7 @@ package chris.utils.AppLauncher.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import chris.utils.AppLauncher.AppLauncherActivity;
 import chris.utils.AppLauncher.R;
@@ -57,6 +58,11 @@ public class MainActivity extends AppLauncherActivity {
 		
 		btnBeginLaunch = findTViewById(R.id.btnBeginLaunch);
 		btnBeginLaunch.setOnClickListener(onBeginLaunchAppsClicked);
+	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         mainHandler.removeCallbacksAndMessages(null);
         mainHandler.postDelayed(startSelectedApps, DEFAULT_WAIT_START_APPS_SEC * 1000L);
@@ -64,8 +70,25 @@ public class MainActivity extends AppLauncherActivity {
         String tips = String.format(getString(R.string.tips), DEFAULT_WAIT_START_APPS_SEC);
         tvTips.setText(tips);
 
+        loopCheck(DEFAULT_WAIT_START_APPS_SEC);
+
         refreshStartAppsInfo();
-	}
+    }
+
+    private void loopCheck(int countDown) {
+
+        mainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String tips = String.format(getString(R.string.tips), countDown - 1);
+                tvTips.setText(tips);
+
+                if (countDown > 0) {
+                    loopCheck(countDown - 1);
+                }
+            }
+        }, 1000L);
+    }
 
     private void refreshStartAppsInfo() {
         StringBuilder sb = new StringBuilder();
