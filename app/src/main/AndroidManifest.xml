@@ -42,11 +42,10 @@
         <activity android:name="chris.utils.AppLauncher.activity.AppListActivity" android:launchMode="singleTask" />
 
         <receiver android:name="chris.utils.AppLauncher.receiver.BootBroadcastReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
 
