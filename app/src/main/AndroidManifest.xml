@@ -36,7 +36,10 @@
         <activity android:name="chris.utils.AppLauncher.activity.AppListActivity" android:launchMode="singleTask" />
 
         <receiver android:name="chris.utils.AppLauncher.receiver.BootBroadcastReceiver"
-            android:exported="true">
+            android:enabled="true"
+            android:exported="true"
+            android:priority="999"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
